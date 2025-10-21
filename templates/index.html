@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>{{ restaurant }} — Feedback</title>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="page">
+    <div class="survey-wrap">
+      <div class="card">
+        <header class="card-header">
+          <!-- Text logo -->
+          <div class="logo-text">{{ restaurant }}</div>
+          <div class="pre-fill">Pre-Fill by Staff</div>
+        </header>
+
+        <div class="progress">
+          <div id="progressBar"></div>
+        </div>
+        <div id="progressText" class="progress-text">1 / 14</div>
+
+        <form id="surveyForm" method="POST" action="/submit" novalidate>
+        <!-- Step 1: Branch selection -->
+        <section class="step active">
+            <label class="q">Please select your branch.</label>
+            <select name="branch" required>
+              <option value="" disabled selected>Choose branch</option>
+              {% for b in branches %}
+              <option value="{{ b }}">{{ b }}</option>
+              {% endfor %}
+            </select>
+          </section>
+
+          <!-- Step 2: Order number -->
+          <section class="step">
+            <label class="q">Please enter the order number.</label>
+            <input type="text" name="order_no" placeholder="Order number" required>
+          </section>
+
+          <!-- Step 3: Server -->
+          <section class="step">
+            <label class="q">Please select your server.</label>
+            <select name="server" required>
+              <option value="" disabled selected>Choose server</option>
+              {% for s in servers %}
+              <option value="{{ s }}">{{ s }}</option>
+              {% endfor %}
+            </select>
+          </section>
+
+          <!-- Step 4: Table number -->
+          <section class="step">
+            <label class="q">Please select your table number.</label>
+            <select name="table_no" required>
+              <option value="" disabled selected>Choose table</option>
+              {% for t in tables %}
+              <option value="{{ t }}">{{ t }}</option>
+              {% endfor %}
+            </select>
+          </section>
+
+          <!-- Step 5: Intro -->
+          <section class="step">
+            <div class="intro">
+              <h3>🧡 Got a sec? We’re all ears!</h3>
+              <p>Tell us how we did at <strong>{{ restaurant }}</strong> and you might just win a sweet surprise!</p>
+            </div>
+          </section>
+
+          <!-- Step 6: Name & Mobile -->
+          <section class="step">
+            <label class="q">Name & Mobile</label>
+          <div class="two-col">
+              <input type="text" name="name" placeholder="Enter your name" required>
+              <input type="tel" name="mobile" placeholder="Enter your mobile number" required pattern="[0-9+ -]{6,20}">
+            </div>
+          </section>
+
+          <!-- Step 7: How did you hear about us -->
+          <section class="step">
+            <label class="q">How did you hear about {{ restaurant }}?</label>
+            <select name="heard_about" required>
+              <option value="" disabled selected>Select one</option>
+              {% for opt in heard_options %}
+              <option value="{{ opt }}">{{ opt }}</option>
+              {% endfor %}
+            </select>
+          </section>
+
+          <!-- Step 8: Visits -->
+          <section class="step">
+            <label class="q">How many times have you visited {{ restaurant }}?</label>
+            <div class="options-col">
+              <label><input type="radio" name="visits" value="First time" required> First time</label>
+              <label><input type="radio" name="visits" value="2-3 times"> 2–3 times</label>
+              <label><input type="radio" name="visits" value="Regular customer"> Regular customer</label>
+            </div>
+          </section>
+
+          <!-- Step 9: Experience (emoji) -->
+          <section class="step">
+            <label class="q">How was your experience today?</label>
+            <div class="emoji-row" role="radiogroup" aria-label="experience">
+              <label><input type="radio" name="experience" value="😞" required><span>😞</span><div class="emoji-label">Poor</div></label>
+              <label><input type="radio" name="experience" value="😐"><span>😐</span><div class="emoji-label">Okay</div></label>
+              <label><input type="radio" name="experience" value="🙂"><span>🙂</span><div class="emoji-label">Good</div></label>
+              <label><input type="radio" name="experience" value="😍"><span>😍</span><div class="emoji-label">Excellent</div></label>
+            </div>
+          </section>
+
+          <!-- Step 10: What did you like? -->
+          <section class="step">
+            <label class="q">What did you like the most?</label>
+            <textarea name="what_liked" placeholder="Tell us what you liked (optional)"></textarea>
+          </section>
+
+          <!-- Step 11: Favorite food/drink -->
+          <section class="step">
+            <label class="q">What food or beverage item stood out for you?</label>
+            <input type="text" name="favorite_item" placeholder="Dish or drink (optional)">
+          </section>
+
+          <!-- Step 12: Smaller portion question -->
+          <section class="step">
+            <label class="q">Would you like to see a smaller portion size?</label>
+            <div class="options-col">
+              <label><input type="radio" name="smaller_portion" value="Yes" required> Yes</label>
+              <label><input type="radio" name="smaller_portion" value="No"> No</label>
+            </div>
+          </section>
+
+          <!-- Step 13: Which items you liked (checkboxes) -->
+          <section class="step">
+            <label class="q">Please let us know which items you liked below (optional)</label>
+            <div class="checkbox-grid">
+              <label><input type="checkbox" name="liked_items" value="Pizza"> Pizza</label>
+              <label><input type="checkbox" name="liked_items" value="Burger"> Burger</label>
+              <label><input type="checkbox" name="liked_items" value="Fries"> Fries</label>
+              <label><input type="checkbox" name="liked_items" value="Drink"> Drink</label>
+              <label><input type="checkbox" name="liked_items" value="Dessert"> Dessert</label>
+              <label><input type="checkbox" name="liked_items" value="Other"> Other</label>
+            </div>
+          </section>
+
+          <!-- Step 14: Final message / submit -->
+          <section class="step">
+            <div class="final">
+              <h3>Thank you for sharing your feedback!</h3>
+              <p>Press Submit to finish. We appreciate your time.</p>
+            </div>
+          </section>
+
+          <!-- Navigation -->
+          <div class="nav">
+            <button type="button" id="prevBtn" class="btn secondary">← Back</button>
+            <button type="button" id="nextBtn" class="btn primary">Next →</button>
+            <button type="submit" id="submitBtn" class="btn primary" style="display:none;">Submit</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+<script>
+  // JS for multi-step flow
+  const steps = Array.from(document.querySelectorAll('.step'));
+  const nextBtn = document.getElementById('nextBtn');
+  const prevBtn = document.getElementById('prevBtn');
+  const submitBtn = document.getElementById('submitBtn');
+  const progressBar = document.getElementById('progressBar');
+  const progressText = document.getElementById('progressText');
+  const form = document.getElementById('surveyForm');
+
+  let idx = 0;
+  const total = steps.length;
+
+  function showStep(i) {
+    steps.forEach((s, n) => s.classList.toggle('active', n === i));
+    progressBar.style.width = ((i + 1) / total) * 100 + '%';
+    progressText.textContent = (i + 1) + ' / ' + total;
+    prevBtn.style.display = i === 0 ? 'none' : 'inline-block';
+    nextBtn.style.display = i === total - 1 ? 'none' : 'inline-block';
+    submitBtn.style.display = i === total - 1 ? 'inline-block' : 'none';
+    // focus first input in step
+    const first = steps[i].querySelector('input, textarea, select');
+    if (first) first.focus();
+  }
+
+  function validateCurrentStep() {
+    const current = steps[idx];
+    const requiredEls = current.querySelectorAll('[required]');
+    for (let el of requiredEls) {
+      if (el.type === 'radio') {
+        const name = el.name;
+        const checked = current.querySelector(`input[name="${name}"]:checked`);
+        if (!checked) {
+          alert('Please select an option to continue.');
+          return false;
+        }
+      } else if (el.tagName.toLowerCase() === 'select') {
+        if (!el.value) {
+          alert('Please select an option to continue.');
+          return false;
+        }
+      } else if (!el.value.trim()) {
+        alert('Please fill this field to continue.');
+        el.focus();
+        return false;
+      }
+    }
+    return true;
+  }
+
+  nextBtn.addEventListener('click', () => {
+    if (!validateCurrentStep()) return;
+    if (idx < total - 1) idx++;
+    showStep(idx);
+  });
+
+  prevBtn.addEventListener('click', () => {
+    if (idx > 0) idx--;
+    showStep(idx);
+  });
+
+  // prevent accidental submit by Enter on required selects/inputs while not on last step
+  form.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      if (idx < total - 1) {
+        e.preventDefault();
+        nextBtn.click();
+      }
+    }
+  });
+
+  // init
+  showStep(idx);
+</script>
+</body>
+</html>
